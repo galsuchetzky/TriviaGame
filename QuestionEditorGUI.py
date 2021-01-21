@@ -1,88 +1,11 @@
+import re
+import os
+
+from Utils import write_json, read_json
 from tkinter import *
 from os import listdir
-import re
-
+from Strings import *
 from Question import Question
-
-FILE_NOT_LOADED_FEEDBACK = '.קובץ שאלות לא נטען'
-
-NO_QUESTION_TO_UPDATE_FEEDBACK = '.לא נטענה שאלה, עדכון נכשל'
-
-FILE_FORMAT_REGEX = r'((.+\r\n){5}[0-3]\r\n\r\n)+'
-
-INVALID_FILE_STRUCTURE_FEEDBACK = ".קובץ שאלות לא תקין"
-
-UPDATE_FAILED_FEEDBACK = '.עדכון נכשל'
-
-QUESTION_LOADED_SUCCESSFULLY_FEEDBACK = '.שאלה נטענה בהצלחה'
-
-INVALID_QUESTION_INDEX_FEEDBACK = "!מספר שאלה לא תקין"
-
-CREATE_FILE_BUTTON_TEXT = "צור קובץ"
-
-INVALID_FILE_NAME_FEEDBACK = "!שם קובץ לא חוקי"
-
-QUESTION_DELETED_SUCCESSFULLY_FEEDBACK = ".שאלה נמחקה בהצלחה"
-
-FILE_CREATED_SUCCESSFULLY_FEEDBACK = '.הקובץ נוצר בהצלחה'
-
-NOTHING_TO_DELETE_FEEDBACK = ".קובץ השאלות ריק, אין מה למחוק"
-
-INVALID_CORRECT_ANSWER_FEEDBACK = '!תשובה נכונה לא יכולה להיות ריקה'
-
-QUESTION_SAVED_SUCCESSFULLY_FEEDBACK = '.שאלה נשמרה בהצלחה'
-
-SAVE_FORMAT_ERROR = ".שגיאת פורמט, לא נשמר"
-
-FEEDBACK_ERROR_COLOR = 'red'
-
-EMPTY_FILE_FEEDBACK = '.קובץ שאלות ריק'
-
-FEEDBACK_NOTIFY_COLOR = 'black'
-
-FEEDBACK_SUCCESS_COLOR = 'green'
-
-UPDATED_SUCCESSFULLY_FEEDBACK = '.עודכן בהצלחה'
-
-FILE_LOADED_SUCCESSFULLY_FEEDBACK = '.הקובץ נטען בהצלחה'
-
-NEW_FILE_NAME_LABEL = ":שם קובץ חדש"
-
-NEW_FILE_BUTTON_TEXT = 'קובץ חדש'
-
-CORRECT_ANSWER_COLOR = 'lightgreen'
-
-DELETE_QUESTION_BUTTON_TEXT = "מחק שאלה"
-
-EXIT_BUTTON_TEXT = "יציאה"
-
-TITLE = 'Question Editor'
-
-ENTER_KEY = '<Return>'
-
-QUESTION_NUMBER_LABEL_TEXT = ":מספר שאלה"
-
-FILE_NAME_LABEL = ":שם הקובץ"
-
-BR = '\r\n'
-
-EMPTY_ANSWER = '_'
-
-CLEAR_BUTTON_TEXT = "נקה"
-
-SAVE_NEW_BUTTON_TEXT = "צור שאלה חדשה"
-
-UPDATE_BUTTON_TEXT = "עדכן"
-
-PREVIOUS_BUTTON_TEXT = "הקודם ->"
-
-NEXT_BUTTON_TEXT = "<- הבא"
-
-QUESTION_LABEL = ":שאלה"
-
-QUESTION_FILE_LABEL = ":קובץ שאלות"
-
-LOAD_BUTTON_TEXT = "טען קובץ"
 
 QUESTIONS_LOCATION = 'questions\\'
 
@@ -91,6 +14,8 @@ ENCODING = 'UTF-8'
 WINDOW_HEIGHT = 1600
 
 WINDOW_WIDTH = 450
+
+FILE_FORMAT_REGEX = r'((.+\r\n){5}[0-3]\r\n\r\n)+'
 
 
 def is_int(string):
@@ -158,7 +83,8 @@ class QuestionEditorGui:
         choose_question_file_label.grid(column=5)
 
         # Creates the option menu for the types of questions available
-        question_files = listdir(QUESTIONS_LOCATION)
+        question_files = [file_name.replace('.json', '') for file_name in listdir(QUESTIONS_LOCATION)
+                          if file_name.endswith('.json')]
         files_var = StringVar(toolbar_frame)
         if question_files:
             files_var.set(question_files[0])
@@ -312,30 +238,18 @@ class QuestionEditorGui:
         """
         Loads the selected question file.
         If the selected file is empty, returns.
-        :param questions_file: The name of the questions file
+        :param questions_file: The name of the questions file.
         """
+        questions_path = QUESTIONS_LOCATION + questions_file + '.json'
+        if not os.path.isfile(questions_path):
+            self.update_feedback(INVALID_FILE_STRUCTURE_FEEDBACK, FEEDBACK_ERROR_COLOR)
+            return
         self.questions_file = questions_file  # Save the name of the current question file.
-        with open(QUESTIONS_LOCATION + questions_file, 'rb') as qf:
-            lines = [s.decode(ENCODING) for s in qf.readlines()]
-            if not lines:  # Check if the file is empty
-                self.questions = []
-            else:
-                # Creates the questions list.
-                trivia_questions = ''.join(lines)
-                valid_format = re.sub(FILE_FORMAT_REGEX, '', trivia_questions) == ''
-                if not valid_format:
-                    self.update_feedback(INVALID_FILE_STRUCTURE_FEEDBACK, FEEDBACK_ERROR_COLOR)
-                    return
-                self.questions = [Question(question_string) for question_string in
-                                  trivia_questions.split('\r\n\r\n') if
-                                  question_string.replace('\r\n', '')]
+        questions_dict = read_json(questions_path)
+        self.questions = [Question(question) for question in questions_dict.values()]
 
-        if self.questions:
-            self.questions_optionmenu.configure(state=ACTIVE)
-            self.total_questions_number['text'] = '/' + str(len(self.questions))
-        else:
-            self.questions_optionmenu.configure(state=DISABLED)
-            self.total_questions_number['text'] = '/0'
+        self.total_questions_number['text'] = '/' + str(len(self.questions))
+        self.questions_optionmenu.configure(state=ACTIVE if self.questions else DISABLED)
 
         self.current_question_index = 0
         self.file_loaded = True
@@ -391,21 +305,21 @@ class QuestionEditorGui:
         self.clear_fields()  # Clears the fields for a new question to be loaded.
 
         # Loads the question.
-        self.question_entry.insert(0, self.questions[self.current_question_index].get_question())
+        self.question_entry.insert(0, self.questions[self.current_question_index]["question"])
 
         # Loads the answers.
         for i in range(4):
-            ans = self.questions[self.current_question_index].get_answer(i)
+            ans = self.questions[self.current_question_index]['ans' + str(i)]
             ans = ans if ans != '_' else ''
             self.answers_entries[i].insert(0, ans)
 
         # Load the correct answer
         self.correct_answer_var.set(
-            self.questions[self.current_question_index].get_correct_answer())
+            self.questions[self.current_question_index]['correct'])
         self.mark_correct_answer()
 
         # Update the question optionmenu
-        self.questions_var.set(self.questions[self.current_question_index].get_question())
+        self.questions_var.set(self.questions[self.current_question_index]['question'])
         self.update_feedback(QUESTION_LOADED_SUCCESSFULLY_FEEDBACK, FEEDBACK_SUCCESS_COLOR)
 
     def delete_question(self):
@@ -466,14 +380,14 @@ class QuestionEditorGui:
 
         # Update the question.
         question = self.questions[self.current_question_index]
-        question.set_question(self.question_entry.get())
+        question['question'] = self.question_entry.get()
 
         # Update the answers.
         for i in range(4):
-            question.set_answer(i, answers[i])
+            question['ans' + str(i)] = answers[i]
 
         # Update the correct answer
-        question.set_correct_answer(self.correct_answer_var.get())
+        question['correct'] = self.correct_answer_var.get()
 
         self.regenerate_file()
         self.update_question_options()
@@ -485,10 +399,16 @@ class QuestionEditorGui:
         Updates the files option menu to the file's list after adding a new file.
         """
         # Gets the files names.
-        question_files = listdir(QUESTIONS_LOCATION)
+        question_files = [file_name.replace('.json', '') for file_name in listdir(QUESTIONS_LOCATION) if
+                          file_name.endswith('.json')]
+        self.questions_file = question_files[0] if question_files else ''
+        if not question_files:  # The option menu requires something to display. if there are no files to display,
+            # display nothing.
+            question_files = ['']
 
         # Recreates the question file option menu
         self.file_optionmenu.grid_remove()
+        print(question_files)
         self.file_optionmenu = OptionMenu(self.toolbar_frame, self.files_var, *question_files)
         self.file_optionmenu.grid(column=4, row=0, padx=10, sticky=E)
         self.files_var.set(self.questions_file)
@@ -503,10 +423,8 @@ class QuestionEditorGui:
             questions = {}
         else:
             # Gets the questions.
-            questions = {str(self.questions.index(
-                question) + 1) + ". " + question.get_question(): self.questions.index(question) + 1
-                         for
-                         question in self.questions}
+            questions = {str(question['index'] + 1) + ". " + question['question']:
+                             question['index'] + 1 for question in self.questions}
 
         # Recreates the question file option menu
         self.questions_optionmenu.grid_remove()
@@ -562,31 +480,28 @@ class QuestionEditorGui:
         Generates a valid question's format (valid for the Question object) from the editor.
         :return: The generated question format.
         """
-        # Adds the question to the format.
-        question_format = self.question_entry.get() + BR
+        # Create question dict
+        question = {
+            'index': self.current_question_index,
+            'question': self.question_entry.get(),
+            'correct': self.correct_answer_var.get()
+        }
 
-        # Adds the answers to the format.
+        # Add answers to question dict.
         for i in range(4):
             ans = self.answers_entries[i].get()
             ans = ans if ans else EMPTY_ANSWER
-            question_format += ans + BR
+            question['ans' + str(i)] = ans
 
-        # Adds the correct answer's number to the format.
-        question_format += str(self.correct_answer_var.get())
-
-        return question_format
+        return question
 
     def regenerate_file(self):
         """
         Regenerates the current file, where the newly generated file contains all the questions
         currently loaded to the system.
         """
-        with open(QUESTIONS_LOCATION + self.questions_file, 'wb') as qf:
-            qf.truncate()
-            for question in self.questions:
-                question.get_question_format()
-                qf.write(
-                    question.get_question_format().encode(ENCODING) + (BR + BR).encode(ENCODING))
+        questions = {'question_' + str(question['index']): question.question_dict for question in self.questions}
+        write_json(questions, QUESTIONS_LOCATION + self.questions_file + '.json')
 
     def clear_fields(self):
         """
@@ -612,10 +527,16 @@ class QuestionEditorGui:
         Creates a new file.
         """
 
-        def create(name):
-            f = open(QUESTIONS_LOCATION + name, 'wb')
-            f.close()
-            self.load_question_file(name)
+        def create(new_file_name):
+            if os.path.isfile(new_file_name):
+                self.update_feedback(FAILED_TO_CREATE_FILE_FEEDBACK, FEEDBACK_SUCCESS_COLOR)
+
+            # Create a file with the given name.
+            write_json({}, QUESTIONS_LOCATION + new_file_name + '.json')
+            # f = open(QUESTIONS_LOCATION + new_file_name, 'w')
+            # f.close()
+
+            self.load_question_file(new_file_name)
             self.update_file_options()
             self.update_feedback(FILE_CREATED_SUCCESSFULLY_FEEDBACK, FEEDBACK_SUCCESS_COLOR)
             self.new_file_gui_root = None

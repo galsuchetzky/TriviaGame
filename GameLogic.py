@@ -5,6 +5,7 @@ from Question import Question
 from TriviaGUI import TriviaGui
 from ResultsGUI import ResultsGui
 
+
 # todo extract all the Tk objects here and send them to the constructor.
 
 class GameLogic:
