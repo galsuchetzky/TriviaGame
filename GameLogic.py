@@ -4,6 +4,7 @@ from QuestionSelectionGUI import QuestionSelectionGui
 from Question import Question
 from TriviaGUI import TriviaGui
 from ResultsGUI import ResultsGui
+from Utils import read_json, write_json
 
 
 # todo extract all the Tk objects here and send them to the constructor.
@@ -28,11 +29,9 @@ class GameLogic:
         if not file_name:
             return
         self.game_cap = game_cap
-        with open(questions_loc + file_name, 'rb') as qf:
-            lines = [s.decode('UTF-8') for s in qf.readlines()]
-            trivia_questions = ''.join(lines)
-            self.questions = [Question(question_string) for question_string in
-                              trivia_questions.split('\r\n\r\n') if question_string]
+        questions_path = questions_loc + file_name + '.json'
+        questions_dict = read_json(questions_path)
+        self.questions = [Question(question) for question in questions_dict.values()]
 
         self.run_game()
 

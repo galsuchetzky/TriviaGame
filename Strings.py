@@ -78,3 +78,16 @@ QUESTION_FILE_LABEL = ":קובץ שאלות"
 
 LOAD_BUTTON_TEXT = "טען קובץ"
 
+INVALID_CAP_AMOUNT_FEEDBACK = '.מספר שאלות לא תקין'
+
+GAME_CAP_LABEL_TEXT = ':מספר שאלות'
+
+EDITOR_BUTTON_TEXT = 'עורך שאלונים'
+
+QUESTIONS_FILE_NOT_SELECTED_FEEDBACK = '.אנא בחר קובץ שאלות'
+
+START_GAME_LABEL = "התחל שאלון"
+
+QUESTIONS_LOCATION = 'questions\\'
+
+CHOOSE_QUESTIONS_LABEL = ':בחר נושא'

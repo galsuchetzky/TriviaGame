@@ -158,9 +158,11 @@ class QuestionEditorGui:
         correct_answer_var = IntVar(editor_frame, value=0)
         correct_answer_radiobutton = []
         for i in range(4):
-            correct_answer_radiobutton.append(Radiobutton(editor_frame,
-                                                          variable=correct_answer_var, value=i))
-            correct_answer_radiobutton[i].grid(row=i + 1, column=0, padx=(10, 0))
+            radio_button = Radiobutton(editor_frame,
+                                       variable=correct_answer_var, value=i,
+                                       command=self.mark_correct_answer)
+            correct_answer_radiobutton.append(radio_button)
+            radio_button.grid(row=i + 1, column=0, padx=(10, 0))
 
         return question_entry, answers_entries, correct_answer_var
 
@@ -408,7 +410,6 @@ class QuestionEditorGui:
 
         # Recreates the question file option menu
         self.file_optionmenu.grid_remove()
-        print(question_files)
         self.file_optionmenu = OptionMenu(self.toolbar_frame, self.files_var, *question_files)
         self.file_optionmenu.grid(column=4, row=0, padx=10, sticky=E)
         self.files_var.set(self.questions_file)

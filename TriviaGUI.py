@@ -167,12 +167,12 @@ class TriviaGui:
         self.questions_asked += 1
         question = self.get_question()
 
-        self.questionText = question.get_question()  # Loads the question.
-        self.correct_answer = question.get_correct_answer()  # Loads the correct answer's number.
+        self.questionText = question['question']  # Loads the question.
+        self.correct_answer = question['correct']  # Loads the correct answer's number.
 
         # Loads the possible answers.
         for i in range(4):
-            self.answersText[i] = question.get_answer(i)
+            self.answersText[i] = question['ans' + str(i)]
 
             # Displays the next question and it's possible answers.
             self.question_label["text"] = self.questionText

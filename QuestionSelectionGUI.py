@@ -1,22 +1,10 @@
+import os
+
 from tkinter import *
 from os import listdir
 from QuestionEditorGUI import QuestionEditorGui
-
-INVALID_CAP_AMOUNT_FEEDBACK = '.מספר שאלות לא תקין'
-
-GAME_CAP_LABEL_TEXT = ':מספר שאלות'
-
-EDITOR_BUTTON_TEXT = 'עורך שאלונים'
-
-EMPTY_FILE_FEEDBACK = ".קובץ שאלות ריק"
-
-QUESTIONS_FILE_NOT_SELECTED_FEEDBACK = '.אנא בחר קובץ שאלות'
-
-START_GAME_LABEL = "התחל שאלון"
-
-QUESTIONS_LOCATION = 'questions\\'
-
-CHOOSE_QUESTIONS_LABEL = ':בחר נושא'
+from Strings import *
+from Utils import write_json, read_json
 
 WINDOW_HEIGHT = 200
 
@@ -72,7 +60,8 @@ class QuestionSelectionGui:
 
         # Creates the option menu for the types of questions available
         file_var = StringVar(conf_frame)
-        question_files = listdir(QUESTIONS_LOCATION)
+        question_files = [file_name.replace('.json', '') for file_name in listdir(QUESTIONS_LOCATION) if
+                          file_name.endswith('.json')]
         question_files = question_files if question_files else [[]]
 
         questions_option_menu = OptionMenu(conf_frame, file_var, *question_files)
@@ -121,6 +110,7 @@ class QuestionSelectionGui:
         return feedback_label
 
     def start_trivia(self, questions_location, file_name, game_cap):
+        file_path = QUESTIONS_LOCATION + file_name + '.json'
         # Check that the game_cap is positive.
         try:
             print(game_cap)
@@ -135,18 +125,18 @@ class QuestionSelectionGui:
         if not self.file_var.get():
             self.update_feedback(QUESTIONS_FILE_NOT_SELECTED_FEEDBACK, FEEDBACK_ERROR_COLOR)
             return
-        with open(QUESTIONS_LOCATION + file_name, 'rb') as qf:
-            lines = [s.decode(ENCODING) for s in qf.readlines()]
-            if not lines:
-                self.update_feedback(EMPTY_FILE_FEEDBACK, FEEDBACK_ERROR_COLOR)
-                return
-            else:
-                file_content = ''.join(lines)
-                # print(file_content)
-                valid_format = re.sub(FILE_FORMAT_REGEX, '', file_content) == ''
-                if not valid_format:
-                    self.update_feedback(INVALID_FILE_STRUCTURE_FEEDBACK, FEEDBACK_ERROR_COLOR)
-                    return
+
+        # Check that the file exists.
+        if not os.path.isfile(file_path):
+            self.update_feedback(FILE_NOT_LOADED_FEEDBACK, FEEDBACK_ERROR_COLOR)
+            return
+
+        # Check if the file contains questions.
+        if not read_json(file_path):
+            self.update_feedback(EMPTY_FILE_FEEDBACK, FEEDBACK_ERROR_COLOR)
+            return
+
+        # TODO add file structure verification.
 
         self.choose_questions_root.destroy()
         self.start_trivia_callback(questions_location, file_name, int(game_cap))
@@ -160,11 +150,11 @@ class QuestionSelectionGui:
 
     def update_file_options(self):
         self.questions_option_menu.grid_remove()
-        question_files = listdir(QUESTIONS_LOCATION)
+        question_files = [file_name.replace('.json', '') for file_name in listdir(QUESTIONS_LOCATION) if
+                          file_name.endswith('.json')]
         question_files = question_files if question_files else [[]]
         self.questions_option_menu = OptionMenu(self.conf_frame, self.file_var, *question_files)
         self.questions_option_menu.grid(row=0, column=0, sticky=E + W, padx=5)
-
 
 
 if __name__ == '__main__':
