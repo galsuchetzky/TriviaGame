@@ -517,6 +517,7 @@ class QuestionEditorGui:
 
         # Reset the correct answer's radiobutton.
         self.correct_answer_var.set(0)
+        self.mark_correct_answer()
 
     def mark_correct_answer(self):
         for entry in self.answers_entries:

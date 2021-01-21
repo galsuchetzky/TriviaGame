@@ -1,3 +1,8 @@
+"""
+This file contains the strings for the feedback, as well as some constants.
+"""
+
+
 FILE_NOT_LOADED_FEEDBACK = '.קובץ שאלות לא נטען'
 
 NO_QUESTION_TO_UPDATE_FEEDBACK = '.לא נטענה שאלה, עדכון נכשל'

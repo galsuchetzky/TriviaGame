@@ -4,10 +4,14 @@ from QuestionSelectionGUI import QuestionSelectionGui
 from Question import Question
 from TriviaGUI import TriviaGui
 from ResultsGUI import ResultsGui
-from Utils import read_json, write_json
+from Utils import read_json
 
 
 # todo extract all the Tk objects here and send them to the constructor.
+
+def show_results(time_played, correct_answers, wrong_answers):
+    ResultsGui(time_played, correct_answers, wrong_answers, play)
+
 
 class GameLogic:
     """
@@ -43,10 +47,7 @@ class GameLogic:
 
     def end_game(self, game_root, score, time_played):
         game_root.destroy()
-        self.show_results(time_played, score, self.game_cap - score)
-
-    def show_results(self, time_played, correct_answers, wrong_answers):
-        ResultsGui(time_played, correct_answers, wrong_answers, play)
+        show_results(time_played, score, self.game_cap - score)
 
 
 def play(res_root=None):

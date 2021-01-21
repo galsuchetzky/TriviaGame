@@ -64,6 +64,8 @@ class QuestionSelectionGui:
                           file_name.endswith('.json')]
         question_files = question_files if question_files else [[]]
 
+        if question_files:
+            file_var.set(question_files[0])
         questions_option_menu = OptionMenu(conf_frame, file_var, *question_files)
         questions_option_menu.grid(row=0, column=0, sticky=E + W, padx=5)
 
@@ -113,7 +115,6 @@ class QuestionSelectionGui:
         file_path = QUESTIONS_LOCATION + file_name + '.json'
         # Check that the game_cap is positive.
         try:
-            print(game_cap)
             if int(game_cap) <= 0:
                 self.update_feedback(INVALID_CAP_AMOUNT_FEEDBACK, FEEDBACK_ERROR_COLOR)
                 return
@@ -152,7 +153,8 @@ class QuestionSelectionGui:
         self.questions_option_menu.grid_remove()
         question_files = [file_name.replace('.json', '') for file_name in listdir(QUESTIONS_LOCATION) if
                           file_name.endswith('.json')]
-        question_files = question_files if question_files else [[]]
+        if question_files:
+            self.file_var.set(question_files[0])
         self.questions_option_menu = OptionMenu(self.conf_frame, self.file_var, *question_files)
         self.questions_option_menu.grid(row=0, column=0, sticky=E + W, padx=5)
 
