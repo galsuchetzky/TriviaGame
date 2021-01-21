@@ -444,6 +444,11 @@ class QuestionEditorGui:
         self.questions_optionmenu.grid(row=1, column=0, columnspan=6, sticky=W + E)
 
     def update_feedback(self, text, color):
+        """
+        Updates the feedback label.
+        :param text: The text to display in the label.
+        :param color: The color of the displayed text.
+        """
         self.feedback_label['text'] = text
         self.feedback_label['fg'] = color
 
@@ -520,6 +525,9 @@ class QuestionEditorGui:
         self.mark_correct_answer()
 
     def mark_correct_answer(self):
+        """
+        Marks the correct answer in green.
+        """
         for entry in self.answers_entries:
             entry['bg'] = 'white'
         self.answers_entries[self.correct_answer_var.get()]['bg'] = CORRECT_ANSWER_COLOR
@@ -530,13 +538,15 @@ class QuestionEditorGui:
         """
 
         def create(new_file_name):
+            """
+            Creates a new empty json file.
+            :param new_file_name: The name of the new json file.
+            """
             if os.path.isfile(new_file_name):
                 self.update_feedback(FAILED_TO_CREATE_FILE_FEEDBACK, FEEDBACK_SUCCESS_COLOR)
 
             # Create a file with the given name.
             write_json({}, QUESTIONS_LOCATION + new_file_name + '.json')
-            # f = open(QUESTIONS_LOCATION + new_file_name, 'w')
-            # f.close()
 
             self.load_question_file(new_file_name)
             self.update_file_options()
@@ -556,9 +566,15 @@ class QuestionEditorGui:
         NewFileGui(create, window_terminated, self.new_file_gui_root)
 
     def hide_caller(self):
+        """
+        Hides the caller root window.
+        """
         self.caller_root.withdraw()
 
     def reveal_caller_and_quit(self):
+        """
+        Returns the caller to the front and destroys the old window.
+        """
         self.question_editor_root.destroy()
         self.caller_root.deiconify()
         if self.new_file_gui_root is not None:
@@ -588,6 +604,9 @@ class NewFileGui:
         self.file_name_request_root.mainloop()
 
     def finish(self):
+        """
+        Creates a new file and quits.
+        """
         name = self.file_name_entry.get()
         self.file_name_request_root.destroy()
         self.create(name)

@@ -4,19 +4,11 @@ from tkinter import *
 from os import listdir
 from QuestionEditorGUI import QuestionEditorGui
 from Strings import *
-from Utils import write_json, read_json
+from Utils import read_json
 
 WINDOW_HEIGHT = 200
 
 WINDOW_WIDTH = 350
-
-FILE_FORMAT_REGEX = r'((.+\r\n){5}[0-3]\r\n\r\n)+'
-
-ENCODING = 'UTF-8'
-
-INVALID_FILE_STRUCTURE_FEEDBACK = ".קובץ שאלות לא תקין"
-
-FEEDBACK_ERROR_COLOR = 'red'
 
 DEFAULT_GAME_CAP = 10
 

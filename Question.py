@@ -32,7 +32,17 @@ class Question:
                + 'correct answer: ' + str(self.question_dict['correct'])
 
     def __getitem__(self, key):
+        """
+        Gets an item from the question dictionary.
+        :param key: The name of the element to retrieve.
+        :return: The value of the given key.
+        """
         return self.question_dict[key]
 
     def __setitem__(self, key, value):
+        """
+        Sets an item in the question dictionary.
+        :param key: The key of the element to change.
+        :param value: The new value for the given key.
+        """
         self.question_dict[key] = value

@@ -40,17 +40,34 @@ class GameLogic:
         self.run_game()
 
     def run_game(self):
+        """
+        Runs the game.
+        """
         TriviaGui(self.get_question, self.game_cap, self.end_game)
 
     def get_question(self):
+        """
+        Returns a random question from the questions list.
+        """
         return self.questions[random.randint(0, len(self.questions) - 1)]
 
     def end_game(self, game_root, score, time_played):
+        """
+        Terminates the game.
+        :param game_root: The root window of the game.
+        :param score: The score of the game.
+        :param time_played: The amount of time played.
+        """
         game_root.destroy()
         show_results(time_played, score, self.game_cap - score)
 
 
 def play(res_root=None):
+    """
+    Starts the game, destroys the old windows if any given.
+    :param res_root: result window to destroy.
+    :return:
+    """
     if res_root:
         res_root.destroy()
     GameLogic()

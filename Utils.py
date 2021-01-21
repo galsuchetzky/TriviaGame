@@ -5,6 +5,11 @@ from collections import OrderedDict
 
 
 def read_json(fname):
+    """
+    Reads a json file to an ordered dictionary.
+    :param fname: The path of the file to read.
+    :return: The content of the file as a dictionary.
+    """
     if not fname:
         return {}
     fname = Path(fname)
@@ -13,6 +18,11 @@ def read_json(fname):
 
 
 def write_json(content, fname):
+    """
+    Writes a dictionary to a json file in the path specified in fname.
+    :param content: The content to save in the file. (expecting dictionary).
+    :param fname: The path in which to save the file. (path + file name).
+    """
     if not fname:
         return {}
     fname = Path(fname)

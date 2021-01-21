@@ -96,3 +96,7 @@ START_GAME_LABEL = "התחל שאלון"
 QUESTIONS_LOCATION = 'questions\\'
 
 CHOOSE_QUESTIONS_LABEL = ':בחר נושא'
+
+FILE_FORMAT_REGEX = r'((.+\r\n){5}[0-3]\r\n\r\n)+'
+
+ENCODING = 'UTF-8'
