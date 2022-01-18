@@ -2,8 +2,8 @@ import os
 
 from tkinter import *
 from os import listdir
-from QuestionEditorGUI import QuestionEditorGui
-from Strings import *
+from GUI.QuestionEditorGUI import QuestionEditorGui
+from GUI.Strings import *
 from Utils import read_json
 
 WINDOW_HEIGHT = 200
@@ -12,10 +12,6 @@ WINDOW_WIDTH = 350
 
 DEFAULT_GAME_CAP = 10
 
-
-# todo add instructions (maybe in a new window).
-# todo add game cap selector.
-# todo update the files list after using the editor (added files do not appear)
 
 class QuestionSelectionGui:
     """

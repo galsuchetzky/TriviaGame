@@ -4,7 +4,7 @@ import os
 from Utils import write_json, read_json
 from tkinter import *
 from os import listdir
-from Strings import *
+from .Strings import *
 from Question import Question
 
 QUESTIONS_LOCATION = 'questions\\'

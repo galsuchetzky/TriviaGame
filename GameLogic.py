@@ -1,9 +1,9 @@
 import random
 
-from QuestionSelectionGUI import QuestionSelectionGui
+from GUI.QuestionSelectionGUI import QuestionSelectionGui
 from Question import Question
-from TriviaGUI import TriviaGui
-from ResultsGUI import ResultsGui
+from GUI.TriviaGUI import TriviaGui
+from GUI.ResultsGUI import ResultsGui
 from Utils import read_json
 
 
