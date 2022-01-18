@@ -36,7 +36,7 @@ class TriviaGui:
         self.question_number_label = [None] * 6
 
         self.root, self.answer_buttons, self.score_label, self.question_number_label, \
-        self.timer_label, self.question_label = self.create_gui()
+        self.timer_label, self.question_label, self.difficulty_label = self.create_gui()
 
         self._time_job = None
 
@@ -104,7 +104,14 @@ class TriviaGui:
                        command=lambda k=i: self.check_answer(k)))
             answer_buttons[i].pack(fill=X, expand=YES)
 
-        return root, answer_buttons, score_label, question_number_label, timer_label, question_label
+        # Create information frame
+        information_frame = Frame(root)
+
+        # Create label for difficulty:
+        difficulty_label = Label(information_frame)
+        difficulty_label.pack()
+
+        return root, answer_buttons, score_label, question_number_label, timer_label, question_label, difficulty_label
 
     def check_answer(self, ans_num):
         """
@@ -174,11 +181,12 @@ class TriviaGui:
         for i in range(4):
             self.answersText[i] = question['ans' + str(i)]
 
-            # Displays the next question and it's possible answers.
-            self.question_label["text"] = self.questionText
-            for i in range(4):
-                self.answer_buttons[i]['text'] = self.answersText[i]
+        # Displays the next question and it's possible answers.
+        self.question_label["text"] = self.questionText
+        for i in range(4):
+            self.answer_buttons[i]['text'] = self.answersText[i]
 
+        self.difficulty_label['text'] = question['difficulty']
         self.display_question()
 
     def display_question(self):

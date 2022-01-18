@@ -79,6 +79,8 @@ NEXT_BUTTON_TEXT = "<- הבא"
 
 QUESTION_LABEL = ":שאלה"
 
+ANSWER_LABEL = "תשובה"
+
 QUESTION_FILE_LABEL = ":קובץ שאלות"
 
 LOAD_BUTTON_TEXT = "טען קובץ"
@@ -100,3 +102,7 @@ CHOOSE_QUESTIONS_LABEL = ':בחר נושא'
 FILE_FORMAT_REGEX = r'((.+\r\n){5}[0-3]\r\n\r\n)+'
 
 ENCODING = 'UTF-8'
+
+DIFFICULTY_LABEL = ':קושי'
+
+AUTHOR_LABEL = ':מחבר'

@@ -8,6 +8,9 @@ class Question:
         Represents a question, expects input of the form:
         {
         "index": question index
+        "writer": question writer
+        "difficulty": question difficulty (number 1-5)
+        "context": question context or explanation
         "question": question
         "ans0": ans0
         "ans1": ans1

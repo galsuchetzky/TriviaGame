@@ -1,11 +1,14 @@
-import re
-import os
+"""
+This file defines the GUI for the questions editor in which you can create new questions and questionnaires.
+"""
 
-from Utils import write_json, read_json
-from tkinter import *
+import os
 from os import listdir
-from .Strings import *
+from tkinter import *
+
 from Question import Question
+from Utils import write_json, read_json
+from .Strings import *
 
 QUESTIONS_LOCATION = 'questions\\'
 
@@ -60,11 +63,34 @@ class QuestionEditorGui:
         self.question_entry, self.answers_entries, self.correct_answer_var, \
             = self.create_editor(self.root_frame)
 
+        self.information_frame, self.difficulty_entry, self.difficulty_entry = \
+            self.create_information_frame(self.root_frame)
+
         self.create_buttons(self.root_frame)
 
         self.feedback_label = self.create_feedback(self.root_frame)
 
         self.question_editor_root.mainloop()
+
+    def create_information_frame(self, root_frame):
+        """
+        Creates a frame with additional information entries.
+        """
+        # Create the additional information frame and widgets.
+        information_frame = Frame(root_frame)
+        difficulty_label = Label(information_frame, text=DIFFICULTY_LABEL)
+        difficulty_entry = Entry(information_frame, justify=RIGHT)
+        difficulty_label.grid(row=0, column=3, sticky=E)
+        difficulty_entry.grid(row=0, column=2, sticky=E)
+
+        author_label = Label(information_frame, text=AUTHOR_LABEL)
+        difficulty_entry = Entry(information_frame, justify=RIGHT)
+        author_label.grid(row=0, column=1, sticky=E)
+        difficulty_entry.grid(row=0, column=0, sticky=E)
+
+        information_frame.pack(expand=False, fill=X, anchor=N + W)
+
+        return information_frame, difficulty_entry, difficulty_entry
 
     def create_toolbar(self, root_frame):
         """
@@ -145,7 +171,7 @@ class QuestionEditorGui:
         # Configure answers labels.
         answers_labels = []
         for i in range(4):
-            answers_labels.append(Label(editor_frame, text=":" + "תשובה " + str(i + 1)))
+            answers_labels.append(Label(editor_frame, text=":" + ANSWER_LABEL + " " + str(i + 1)))
             answers_labels[i].grid(row=i + 1, column=2, pady=10)
 
         # Configure answers entries.
