@@ -1,0 +1,20 @@
+{
+    "question_0": {
+        "index": 0,
+        "question": "מה זה צהוב וכחול?",
+        "correct": 0,
+        "ans0": "כלב",
+        "ans1": "חתול",
+        "ans2": "אריה",
+        "ans3": "נחש"
+    },
+    "question_1": {
+        "index": 1,
+        "question": "ךףלחחחח",
+        "correct": 0,
+        "ans0": "ח",
+        "ans1": "ח",
+        "ans2": "ח",
+        "ans3": "ח"
+    }
+}
