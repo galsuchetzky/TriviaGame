@@ -26,5 +26,5 @@ def write_json(content, fname):
     if not fname:
         return {}
     fname = Path(fname)
-    with fname.open('wt') as handle:
+    with fname.open('wt', encoding='utf8') as handle:
         json.dump(content, handle, indent=4, sort_keys=False, ensure_ascii=False)
